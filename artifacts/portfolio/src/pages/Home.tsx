@@ -16,10 +16,12 @@ import screwdriverPath from "@assets/ScrewDriver_1775500371946.png";
 import tablePath from "@assets/Table_1775500371947.png";
 import bookPath from "@assets/Book_1775500371948.png";
 import myKnifePath from "@assets/My_Knife_1775500387524.png";
-import posterPath from "@assets/Poster_1775500401106.jpg";
 import robotTexturedPath from "@assets/Textured_Ref_Angle_Shot_1775500575154.png";
 import robotWirePath from "@assets/WireFrame_Ref_Angle_Shot_1775500584624.jpeg";
-import gravyYardPath from "@assets/Poster_1775500600434.png";
+
+const BASE = import.meta.env.BASE_URL;
+const posterPath = `${BASE}poster-gamers.jpg`;
+const gravyYardPath = `${BASE}poster-gravyyard.jpg`;
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -222,7 +224,7 @@ export default function Home() {
         {/* Parallax knife */}
         <motion.div
           className="absolute pointer-events-none"
-          style={{ right: "6%", top: "18%", width: "clamp(280px, 36vw, 520px)", y: yHero, rotate: rotateKnife, x: smoothX, translateY: smoothY }}
+          style={{ right: "4%", top: "12%", width: "clamp(340px, 44vw, 640px)", y: yHero, rotate: rotateKnife, x: smoothX, translateY: smoothY }}
         >
           <motion.img
             src={myKnifePath}
@@ -247,7 +249,7 @@ export default function Home() {
               style={{ fontSize: "clamp(3.5rem, 9vw, 8rem)" }}
             >
               Crafting<br />
-              <span style={{ color: "#8DB600" }}>Worlds.</span><br />
+              <span style={{ color: "#8DB600", fontWeight: 900 }}>Worlds.</span><br />
               Shipping<br />
               Pixels.
             </motion.h1>
@@ -424,6 +426,7 @@ export default function Home() {
                 <img
                   src={posterPath}
                   alt="A Day in Gamers Life"
+                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -448,6 +451,7 @@ export default function Home() {
                 <img
                   src={gravyYardPath}
                   alt="Gravy Yard"
+                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
