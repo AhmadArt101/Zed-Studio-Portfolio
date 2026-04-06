@@ -576,7 +576,7 @@ export default function Home() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}>
-              <h3 className="text-lg font-black uppercase mb-8 pb-3 tracking-widest" style={{ borderBottom: "2px solid rgba(141,182,0,0.3)", color: "#8DB600" }}>Software</h3>
+              <h3 className="text-lg font-black uppercase mb-8 pb-3 tracking-widest" style={{ borderBottom: "2px solid rgba(141,182,0,0.3)", color: "#8DB600" }}>adobe creative suite</h3>
               <SkillBar name="Photoshop" percentage={90} delay={0} />
               <SkillBar name="Illustrator" percentage={90} delay={0.05} />
               <SkillBar name="After Effects" percentage={90} delay={0.1} />
