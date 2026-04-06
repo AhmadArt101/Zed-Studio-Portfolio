@@ -188,7 +188,6 @@ export default function Home() {
 
   return (
     <div className="bg-background text-foreground min-h-screen font-sans overflow-hidden selection:bg-primary selection:text-primary-foreground">
-
       {/* Navigation */}
       <nav className="fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-4 flex justify-between items-center" style={{ background: "rgba(13,43,26,0.85)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(141,182,0,0.12)" }}>
         <motion.img
@@ -210,7 +209,6 @@ export default function Home() {
           Get in Touch
         </motion.a>
       </nav>
-
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center pt-20 px-6 sm:px-12 md:px-24 overflow-hidden">
         <DotGrid className="inset-0 w-full h-full" />
@@ -241,7 +239,7 @@ export default function Home() {
           <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="max-w-3xl">
             <motion.div variants={fadeUp} className="flex items-center gap-3 mb-6">
               <PixelCross size={18} opacity={0.6} />
-              <span className="text-primary font-mono tracking-widest uppercase text-xs font-bold">Ahmad Akram Abbas — Art Studio of One</span>
+              <span className="text-primary font-mono tracking-widest uppercase text-xs font-bold">Ahmad Akram — Art Studio of One</span>
             </motion.div>
             <motion.h1
               variants={fadeUp}
@@ -284,7 +282,6 @@ export default function Home() {
           <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="w-[1px] h-10 bg-gradient-to-b from-primary to-transparent" />
         </motion.div>
       </section>
-
       {/* Marquee divider */}
       <div className="relative overflow-hidden py-3" style={{ background: "#8DB600" }}>
         <motion.div
@@ -300,7 +297,6 @@ export default function Home() {
           ))}
         </motion.div>
       </div>
-
       {/* About Section */}
       <section className="py-32 px-6 sm:px-12 md:px-24 bg-card relative overflow-hidden">
         <DotGrid className="inset-0 w-full h-full opacity-50" />
@@ -341,7 +337,6 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-
       {/* Portfolio Grid */}
       <section className="py-32 px-6 sm:px-12 md:px-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
@@ -400,7 +395,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Environments & Posters — fixed equal height */}
       <section className="py-32 px-6 sm:px-12 md:px-24 bg-card relative overflow-hidden">
         <DotGrid className="inset-0 w-full h-full opacity-40" />
@@ -467,7 +461,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Process: Robot */}
       <section className="py-32 px-6 sm:px-12 md:px-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
@@ -527,7 +520,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Stylized marquee divider 2 */}
       <div className="relative overflow-hidden py-3" style={{ background: "rgba(255,255,255,0.04)", borderTop: "1px solid rgba(141,182,0,0.15)", borderBottom: "1px solid rgba(141,182,0,0.15)" }}>
         <motion.div
@@ -542,7 +534,6 @@ export default function Home() {
           ))}
         </motion.div>
       </div>
-
       {/* Skills Section */}
       <section className="py-32 px-6 sm:px-12 md:px-24 bg-card relative overflow-hidden">
         <DotGrid className="inset-0 w-full h-full opacity-40" />
@@ -592,7 +583,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Experience & Education */}
       <section className="py-32 px-6 sm:px-12 md:px-24 relative overflow-hidden" style={{ borderTop: "1px solid rgba(141,182,0,0.1)", borderBottom: "1px solid rgba(141,182,0,0.1)" }}>
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
@@ -696,7 +686,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Contact Section */}
       <section id="contact" className="py-32 px-6 sm:px-12 md:px-24 relative overflow-hidden" style={{ background: "#8DB600" }}>
         <Scanlines />
@@ -764,7 +753,6 @@ export default function Home() {
           </motion.a>
         </div>
       </section>
-
       <footer className="py-6 px-6 text-center font-mono text-xs text-foreground/35 flex flex-col md:flex-row items-center justify-between gap-4" style={{ borderTop: "1px solid rgba(141,182,0,0.1)" }}>
         <p>&copy; {new Date().getFullYear()} Zed Studio — Art Studio of One.</p>
         <div className="flex items-center gap-2">
