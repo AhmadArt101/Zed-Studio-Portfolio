@@ -247,7 +247,7 @@ export default function Home() {
               style={{ fontSize: "clamp(3.5rem, 9vw, 8rem)" }}
             >
               Crafting<br />
-              <span style={{ WebkitTextStroke: "2px #8DB600", color: "transparent" }}>Worlds.</span><br />
+              <span style={{ color: "#8DB600" }}>Worlds.</span><br />
               Shipping<br />
               Pixels.
             </motion.h1>
@@ -705,7 +705,7 @@ export default function Home() {
               style={{ fontSize: "clamp(3.5rem, 10vw, 9rem)", color: "#0D2B1A" }}
             >
               Ready to<br />
-              <span style={{ WebkitTextStroke: "3px #0D2B1A", color: "transparent" }}>Respawn?</span>
+              Respawn?
             </h2>
           </motion.div>
 
