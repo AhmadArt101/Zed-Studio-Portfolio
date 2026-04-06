@@ -245,7 +245,7 @@ export default function Home() {
             </motion.div>
             <motion.h1
               variants={fadeUp}
-              className="uppercase leading-[0.82] tracking-tighter mb-10 opacity-[0.78] font-extrabold"
+              className="uppercase leading-[0.82] tracking-tighter mb-10 opacity-[0.78] font-bold"
               style={{ fontSize: "clamp(3.5rem, 9vw, 8rem)" }}
             >
               Crafting<br />
