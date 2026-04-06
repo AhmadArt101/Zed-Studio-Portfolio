@@ -249,7 +249,7 @@ export default function Home() {
               style={{ fontSize: "clamp(3.5rem, 9vw, 8rem)" }}
             >
               Crafting<br />
-              <span style={{ color: "#8DB600", fontWeight: 900 }}>Worlds.</span><br className="text-[120px]" />
+              <span style={{ color: "#8DB600", fontWeight: 900 }}>Worlds.</span><br className="border-l-[2px] border-t-[2px] border-r-[2px] border-b-[2px] text-[#8db600]" />
               Shipping<br />
               Pixels.
             </motion.h1>
