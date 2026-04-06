@@ -1,8 +1,8 @@
-# Workspace
+# Zed Studio Portfolio
 
 ## Overview
 
-pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
+Portfolio website for Ahmad Akram Abbas (Zed Studio) — a 3D Game Artist based in Jordan. Single-page scrolling portfolio with full brand identity implementation.
 
 ## Stack
 
@@ -10,18 +10,29 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **Node.js version**: 24
 - **Package manager**: pnpm
 - **TypeScript version**: 5.9
-- **API framework**: Express 5
-- **Database**: PostgreSQL + Drizzle ORM
-- **Validation**: Zod (`zod/v4`), `drizzle-zod`
-- **API codegen**: Orval (from OpenAPI spec)
-- **Build**: esbuild (CJS bundle)
+- **Frontend**: React + Vite (artifacts/portfolio)
+- **API framework**: Express 5 (artifacts/api-server — not used by portfolio)
+- **Database**: PostgreSQL + Drizzle ORM (not used by portfolio)
+- **UI library**: shadcn/ui + Tailwind CSS
+- **Animation**: Framer Motion
+- **Routing**: wouter
+
+## Artifacts
+
+### Portfolio (artifacts/portfolio)
+- Preview path: `/`
+- Type: react-vite (presentation-first, no backend)
+- Entry: `artifacts/portfolio/src/pages/Home.tsx`
+- Brand colors: deep forest green background, lime/olive green accent (#8DB600), cream/off-white text
+- All 3D work sample images live in `attached_assets/` and are aliased via `@assets/`
 
 ## Key Commands
 
 - `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- `pnpm --filter @workspace/api-server run dev` — run API server locally
+- `pnpm --filter @workspace/portfolio run dev` — run portfolio locally
 
-See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
+## Brand Identity
+
+- Logo: `attached_assets/zedstudio_english_no_bg_1775500272724.png`
+- Colors: Forest green bg (#0D2B1A), Lime green accent (#8DB600), Cream text (#E8E4CC)
+- Sections: Hero, About, Portfolio Grid, Scene Renders, Process (robot wireframe/textured), Skills, Experience/Education, Contact
