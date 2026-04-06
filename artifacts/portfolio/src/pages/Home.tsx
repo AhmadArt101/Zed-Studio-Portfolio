@@ -567,7 +567,7 @@ export default function Home() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
-              <h3 className="text-lg font-black uppercase mb-8 pb-3 tracking-widest" style={{ borderBottom: "2px solid rgba(141,182,0,0.3)", color: "#8DB600" }}>Design &amp; Tech</h3>
+              <h3 className="text-lg font-black uppercase mb-8 pb-3 tracking-widest" style={{ borderBottom: "2px solid rgba(141,182,0,0.3)", color: "#8DB600" }}>technical art</h3>
               <SkillBar name="Market-Driven Game Design" percentage={85} delay={0} />
               <SkillBar name="Tech Art – Unreal Engine" percentage={75} delay={0.05} />
               <SkillBar name="Tech Art – Unity" percentage={70} delay={0.1} />
