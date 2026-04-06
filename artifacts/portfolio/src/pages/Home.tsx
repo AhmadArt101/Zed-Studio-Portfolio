@@ -191,7 +191,7 @@ export default function Home() {
   return (
     <div className="bg-background text-foreground min-h-screen font-sans overflow-hidden selection:bg-primary selection:text-primary-foreground">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 w-full z-50 px-6 md:px-10 flex justify-between items-center" style={{ background: "rgba(13,43,26,0.9)", backdropFilter: "blur(14px)", borderBottom: "1px solid rgba(141,182,0,0.14)", height: "68px" }}>
+      <nav className="fixed top-0 left-0 w-full z-50 px-6 md:px-10 flex justify-between items-center" style={{ background: "rgba(13,43,26,0.9)", backdropFilter: "blur(14px)", borderBottom: "1px solid rgba(141,182,0,0.14)", height: "82px" }}>
         {/* Logo */}
         <motion.a
           href="#"
