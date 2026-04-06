@@ -644,7 +644,7 @@ export default function Home() {
               <TimelineItem date="FEB 2025 – PRESENT" title="3D Game Artist Freelancer" sub="Independent game art projects." index={2} />
               <TimelineItem date="2025" title="Head of Design Team" sub="TEDxASPU 2025" index={3} />
               <TimelineItem date="2022 – 2024" title="Motion Graphics Animator" sub="Freelancer — worked with individuals and YouTube channels." index={4} />
-              <TimelineItem date="2022 – PRESENT" title="Game Jam Participant" sub="Global Game Jam (GGJ), Zanga Game Jam, and more." index={5} />
+              <TimelineItem date="2022 – 2025" title="Game Jam Participant" sub="Global Game Jam (GGJ), Zanga Game Jam, and more." index={5} />
             </div>
           </div>
 
