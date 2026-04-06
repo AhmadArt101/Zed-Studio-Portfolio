@@ -191,22 +191,54 @@ export default function Home() {
   return (
     <div className="bg-background text-foreground min-h-screen font-sans overflow-hidden selection:bg-primary selection:text-primary-foreground">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-4 flex justify-between items-center" style={{ background: "rgba(13,43,26,0.85)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(141,182,0,0.12)" }}>
-        <motion.img
-          src={logoPath}
-          alt="Zed Studio"
-          className="h-10 w-auto"
+      <nav className="fixed top-0 left-0 w-full z-50 px-6 md:px-10 flex justify-between items-center" style={{ background: "rgba(13,43,26,0.9)", backdropFilter: "blur(14px)", borderBottom: "1px solid rgba(141,182,0,0.14)", height: "68px" }}>
+        {/* Logo */}
+        <motion.a
+          href="#"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-        />
+          className="flex-shrink-0"
+        >
+          <img src={logoPath} alt="Zed Studio" className="h-14 w-auto" />
+        </motion.a>
+
+        {/* Nav tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="hidden md:flex items-center gap-1"
+        >
+          {[
+            { label: "Work", href: "#work" },
+            { label: "Process", href: "#process" },
+            { label: "Skills", href: "#skills" },
+            { label: "Experience", href: "#experience" },
+          ].map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className="px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] transition-colors duration-200 rounded-sm hover:text-primary"
+              style={{ color: "rgba(232,228,204,0.6)" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "#8DB600"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(232,228,204,0.6)"; }}
+            >
+              {item.label}
+            </a>
+          ))}
+        </motion.div>
+
+        {/* CTA */}
         <motion.a
           href="#contact"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="font-bold text-sm tracking-widest uppercase hover:text-primary transition-colors"
-          style={{ letterSpacing: "0.2em" }}
+          className="flex-shrink-0 px-5 py-2 text-xs font-black uppercase tracking-widest transition-all duration-200"
+          style={{ background: "#8DB600", color: "#0D2B1A" }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = "0.85"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = "1"; }}
         >
           Get in Touch
         </motion.a>
@@ -340,7 +372,7 @@ export default function Home() {
         </div>
       </section>
       {/* Portfolio Grid */}
-      <section className="py-32 px-6 sm:px-12 md:px-24 relative overflow-hidden">
+      <section id="work" className="py-32 px-6 sm:px-12 md:px-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -467,7 +499,7 @@ export default function Home() {
         </div>
       </section>
       {/* Process: Robot */}
-      <section className="py-32 px-6 sm:px-12 md:px-24 relative overflow-hidden">
+      <section id="process" className="py-32 px-6 sm:px-12 md:px-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -542,7 +574,7 @@ export default function Home() {
         </motion.div>
       </div>
       {/* Skills Section */}
-      <section className="py-32 px-6 sm:px-12 md:px-24 bg-card relative overflow-hidden">
+      <section id="skills" className="py-32 px-6 sm:px-12 md:px-24 bg-card relative overflow-hidden">
         <DotGrid className="inset-0 w-full h-full opacity-40" />
         <FloatingHex delay={0} size={100} x="88%" y="10%" opacity={0.06} />
         <FloatingHex delay={2} size={60} x="2%" y="70%" opacity={0.07} />
@@ -591,7 +623,7 @@ export default function Home() {
         </div>
       </section>
       {/* Experience & Education */}
-      <section className="py-32 px-6 sm:px-12 md:px-24 relative overflow-hidden" style={{ borderTop: "1px solid rgba(141,182,0,0.1)", borderBottom: "1px solid rgba(141,182,0,0.1)" }}>
+      <section id="experience" className="py-32 px-6 sm:px-12 md:px-24 relative overflow-hidden" style={{ borderTop: "1px solid rgba(141,182,0,0.1)", borderBottom: "1px solid rgba(141,182,0,0.1)" }}>
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
 
           {/* Experience */}
