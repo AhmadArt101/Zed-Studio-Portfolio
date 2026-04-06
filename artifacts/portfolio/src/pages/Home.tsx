@@ -557,7 +557,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-              <h3 className="text-lg font-black uppercase mb-8 pb-3 tracking-widest" style={{ borderBottom: "2px solid rgba(141,182,0,0.3)", color: "#8DB600" }}>3D &amp; Sculpting</h3>
+              <h3 className="text-lg font-black uppercase mb-8 pb-3 tracking-widest" style={{ borderBottom: "2px solid rgba(141,182,0,0.3)", color: "#8DB600" }}>3D art pipeline</h3>
               <SkillBar name="3D Modeling – Maya" percentage={90} delay={0} />
               <SkillBar name="3D Modeling – Blender" percentage={90} delay={0.05} />
               <SkillBar name="Sculpting – ZBrush" percentage={85} delay={0.1} />
