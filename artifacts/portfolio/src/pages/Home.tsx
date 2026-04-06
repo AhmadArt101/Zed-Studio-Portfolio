@@ -4,24 +4,24 @@ import { ArrowRight, Mail, Phone, ExternalLink } from "lucide-react";
 
 // Assets
 import logoPath from "@assets/zedstudio_english_no_bg_1775501417725.png";
-import brandPath from "@assets/MobileZed-AR-EN_1775500280925.png";
-import doorPath from "@assets/Door_1775500371942.png";
-import flashlightPath from "@assets/Flashlight_1775500371943.png";
-import keyPath from "@assets/Key_1775500371943.png";
-import knifePath from "@assets/Knife_1775500371944.png";
-import pencilPath from "@assets/Pencil_1775500371944.png";
-import photoFramePath from "@assets/Photo-Frame_1775500371945.png";
-import scissorsPath from "@assets/Scisors_1775500371945.png";
-import screwdriverPath from "@assets/ScrewDriver_1775500371946.png";
-import tablePath from "@assets/Table_1775500371947.png";
-import bookPath from "@assets/Book_1775500371948.png";
-import myKnifePath from "@assets/My_Knife_1775500387524.png";
-import robotTexturedPath from "@assets/Textured_Ref_Angle_Shot_1775500575154.png";
-import robotWirePath from "@assets/WireFrame_Ref_Angle_Shot_1775500584624.jpeg";
 
 const BASE = import.meta.env.BASE_URL;
-const posterPath = `${BASE}poster-gamers.jpg`;
-const gravyYardPath = `${BASE}poster-gravyyard.jpg`;
+const brandPath        = `${BASE}brand.png`;
+const myKnifePath      = `${BASE}hero-knife.png`;
+const posterPath       = `${BASE}poster-gamers.jpg`;
+const gravyYardPath    = `${BASE}poster-gravyyard.jpg`;
+const robotTexturedPath = `${BASE}robot-textured.jpg`;
+const robotWirePath    = `${BASE}robot-wire.jpg`;
+const knifePath        = `${BASE}prop-knife.png`;
+const doorPath         = `${BASE}prop-door.png`;
+const flashlightPath   = `${BASE}prop-flashlight.png`;
+const keyPath          = `${BASE}prop-key.png`;
+const pencilPath       = `${BASE}prop-pencil.png`;
+const photoFramePath   = `${BASE}prop-frame.png`;
+const scissorsPath     = `${BASE}prop-scissors.png`;
+const screwdriverPath  = `${BASE}prop-screwdriver.png`;
+const tablePath        = `${BASE}prop-table.png`;
+const bookPath         = `${BASE}prop-book.png`;
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -249,7 +249,7 @@ export default function Home() {
               style={{ fontSize: "clamp(3.5rem, 9vw, 8rem)" }}
             >
               Crafting<br />
-              <span style={{ color: "#8DB600", fontWeight: 900 }}>Worlds.</span><br className="border-l-[2px] border-t-[2px] border-r-[2px] border-b-[2px] text-[#8db600]" />
+              <span style={{ color: "transparent", WebkitTextStroke: "3px #8DB600", fontWeight: 900 }}>Worlds.</span><br />
               Shipping<br />
               Pixels.
             </motion.h1>
@@ -380,6 +380,7 @@ export default function Home() {
                 <img
                   src={item.src}
                   alt={item.title}
+                  loading="lazy"
                   className="w-full h-full object-cover object-center transition-all duration-700 group-hover:scale-115"
                 />
                 <div className="absolute inset-0 transition-all duration-300 flex items-end p-3"
@@ -497,6 +498,7 @@ export default function Home() {
               <img
                 src={robotWirePath}
                 alt="Robot Wireframe"
+                loading="lazy"
                 className="w-full h-auto object-cover aspect-square group-hover:scale-105 transition-all duration-700"
                 style={{ filter: "grayscale(0.5) brightness(0.9)" }}
               />
@@ -516,6 +518,7 @@ export default function Home() {
               <img
                 src={robotTexturedPath}
                 alt="Robot Textured"
+                loading="lazy"
                 className="w-full h-auto object-cover aspect-square group-hover:scale-105 transition-all duration-700"
               />
               <motion.div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
