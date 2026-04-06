@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import { ArrowRight, Mail, Phone, ExternalLink, Download } from "lucide-react";
+import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring } from "framer-motion";
+import { ArrowRight, Mail, Phone, ExternalLink } from "lucide-react";
 
 // Assets
-import logoPath from "@assets/zedstudio_english_no_bg_1775500272724.png";
+import logoPath from "@assets/zedstudio_english_no_bg_1775501417725.png";
 import brandPath from "@assets/MobileZed-AR-EN_1775500280925.png";
 import doorPath from "@assets/Door_1775500371942.png";
 import flashlightPath from "@assets/Flashlight_1775500371943.png";
@@ -21,113 +21,302 @@ import robotTexturedPath from "@assets/Textured_Ref_Angle_Shot_1775500575154.png
 import robotWirePath from "@assets/WireFrame_Ref_Angle_Shot_1775500584624.jpeg";
 import gravyYardPath from "@assets/Poster_1775500600434.png";
 
-const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-};
-
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
+    transition: { staggerChildren: 0.1 }
   }
 };
 
-const SkillBar = ({ name, percentage }: { name: string; percentage: number }) => {
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } }
+};
+
+// Decorative dot grid
+function DotGrid({ className = "" }: { className?: string }) {
+  return (
+    <div
+      className={`pointer-events-none absolute ${className}`}
+      style={{
+        backgroundImage: "radial-gradient(circle, rgba(141,182,0,0.18) 1.5px, transparent 1.5px)",
+        backgroundSize: "28px 28px",
+      }}
+    />
+  );
+}
+
+// Decorative corner marks
+function CornerMarks({ color = "var(--color-primary)" }: { color?: string }) {
+  const s = 18;
+  return (
+    <>
+      <span style={{ position: "absolute", top: 0, left: 0, width: s, height: s, borderTop: `3px solid ${color}`, borderLeft: `3px solid ${color}` }} />
+      <span style={{ position: "absolute", top: 0, right: 0, width: s, height: s, borderTop: `3px solid ${color}`, borderRight: `3px solid ${color}` }} />
+      <span style={{ position: "absolute", bottom: 0, left: 0, width: s, height: s, borderBottom: `3px solid ${color}`, borderLeft: `3px solid ${color}` }} />
+      <span style={{ position: "absolute", bottom: 0, right: 0, width: s, height: s, borderBottom: `3px solid ${color}`, borderRight: `3px solid ${color}` }} />
+    </>
+  );
+}
+
+// Scanline overlay
+function Scanlines() {
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 z-10 opacity-[0.04]"
+      style={{
+        backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, #fff 2px, #fff 4px)",
+        backgroundSize: "100% 4px",
+      }}
+    />
+  );
+}
+
+// Floating geometry decoration
+function FloatingHex({ delay = 0, size = 60, x = 0, y = 0, opacity = 0.12 }: { delay?: number; size?: number; x?: number; y?: number; opacity?: number }) {
+  return (
+    <motion.div
+      animate={{ y: [0, -18, 0], rotate: [0, 12, 0] }}
+      transition={{ duration: 5 + delay, repeat: Infinity, ease: "easeInOut", delay }}
+      style={{ position: "absolute", left: x, top: y, width: size, height: size, opacity }}
+      className="pointer-events-none"
+    >
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="50,2 93,25 93,75 50,98 7,75 7,25" stroke="#8DB600" strokeWidth="4" />
+      </svg>
+    </motion.div>
+  );
+}
+
+// Animated pixel cross
+function PixelCross({ size = 24, color = "#8DB600", opacity = 0.25 }: { size?: number; color?: string; opacity?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" style={{ opacity }}>
+      <line x1="12" y1="2" x2="12" y2="22" stroke={color} strokeWidth="3" />
+      <line x1="2" y1="12" x2="22" y2="12" stroke={color} strokeWidth="3" />
+    </svg>
+  );
+}
+
+const SkillBar = ({ name, percentage, delay = 0 }: { name: string; percentage: number; delay?: number }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
   return (
-    <div className="mb-6" ref={ref}>
+    <div className="mb-5" ref={ref}>
       <div className="flex justify-between mb-2">
-        <span className="font-bold text-foreground">{name}</span>
-        <span className="text-primary font-mono">{percentage}%</span>
+        <span className="font-bold text-sm text-foreground tracking-wide">{name}</span>
+        <span className="text-primary font-mono text-sm font-bold">{percentage}%</span>
       </div>
-      <div className="h-3 w-full bg-card rounded-full overflow-hidden">
+      <div className="h-2 w-full rounded-none overflow-hidden relative" style={{ background: "rgba(255,255,255,0.08)" }}>
         <motion.div
-          className="h-full bg-primary"
+          className="h-full"
+          style={{ background: "linear-gradient(90deg, #8DB600, #b6e800)" }}
           initial={{ width: 0 }}
           animate={isInView ? { width: `${percentage}%` } : { width: 0 }}
-          transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
+          transition={{ duration: 1.4, ease: "easeOut", delay: 0.15 + delay }}
         />
+        {isInView && (
+          <motion.div
+            className="absolute top-0 right-0 h-full w-6"
+            style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.5))" }}
+            initial={{ x: `-${100 - percentage}%`, opacity: 1 }}
+            animate={{ x: "100%", opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: 0.15 + delay + 1.4 }}
+          />
+        )}
       </div>
     </div>
   );
 };
 
+const TimelineItem = ({
+  date,
+  title,
+  sub,
+  highlight = false,
+  index = 0,
+}: {
+  date: string;
+  title: string;
+  sub?: string;
+  highlight?: boolean;
+  index?: number;
+}) => (
+  <motion.div
+    initial={{ opacity: 0, x: -24 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.5, delay: index * 0.08 }}
+    className="relative pl-6 border-l-2"
+    style={{ borderColor: highlight ? "#8DB600" : "rgba(255,255,255,0.15)" }}
+  >
+    <div
+      className="absolute -left-[9px] top-2 w-4 h-4 rotate-45"
+      style={{ background: highlight ? "#8DB600" : "rgba(255,255,255,0.2)", border: highlight ? "none" : "2px solid rgba(255,255,255,0.3)" }}
+    />
+    <span className="text-primary font-mono text-xs tracking-widest">{date}</span>
+    <h4 className={`text-lg font-black uppercase mt-1 tracking-tight ${highlight ? "text-primary" : "text-foreground"}`}>{title}</h4>
+    {sub && <p className="text-foreground/60 mt-1 text-sm">{sub}</p>}
+    {highlight && (
+      <span className="inline-block mt-2 text-xs font-bold uppercase tracking-widest px-2 py-0.5" style={{ background: "#8DB600", color: "#0D2B1A" }}>
+        Latest
+      </span>
+    )}
+  </motion.div>
+);
+
 export default function Home() {
   const { scrollYProgress } = useScroll();
-  const yHero = useTransform(scrollYProgress, [0, 1], [0, 300]);
+  const yHero = useTransform(scrollYProgress, [0, 0.4], [0, 160]);
+  const rotateKnife = useTransform(scrollYProgress, [0, 0.3], [0, 12]);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const smoothX = useSpring(mouseX, { stiffness: 60, damping: 20 });
+  const smoothY = useSpring(mouseY, { stiffness: 60, damping: 20 });
+
+  useEffect(() => {
+    const handleMouse = (e: MouseEvent) => {
+      mouseX.set((e.clientX - window.innerWidth / 2) * 0.015);
+      mouseY.set((e.clientY - window.innerHeight / 2) * 0.015);
+    };
+    window.addEventListener("mousemove", handleMouse);
+    return () => window.removeEventListener("mousemove", handleMouse);
+  }, [mouseX, mouseY]);
 
   return (
     <div className="bg-background text-foreground min-h-screen font-sans overflow-hidden selection:bg-primary selection:text-primary-foreground">
+
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 w-full z-50 mix-blend-difference p-6 flex justify-between items-center">
-        <img src={logoPath} alt="Zed Studio" className="h-12 w-auto invert" />
-        <a href="#contact" className="font-bold text-lg tracking-widest uppercase hover:text-primary transition-colors">
-          Commence
-        </a>
+      <nav className="fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-4 flex justify-between items-center" style={{ background: "rgba(13,43,26,0.85)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(141,182,0,0.12)" }}>
+        <motion.img
+          src={logoPath}
+          alt="Zed Studio"
+          className="h-10 w-auto"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+        />
+        <motion.a
+          href="#contact"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="font-bold text-sm tracking-widest uppercase hover:text-primary transition-colors"
+          style={{ letterSpacing: "0.2em" }}
+        >
+          Get in Touch
+        </motion.a>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center pt-20 px-6 sm:px-12 md:px-24">
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <motion.div 
-            style={{ y: yHero }}
-            className="absolute top-1/4 right-[10%] w-[40vw] max-w-[600px] opacity-80"
-          >
-            <motion.img 
-              src={myKnifePath} 
-              alt="Cleaver"
-              initial={{ y: 50, opacity: 0, rotate: -15 }}
-              animate={{ y: 0, opacity: 1, rotate: 0 }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-              className="w-full h-auto drop-shadow-[0_20px_50px_rgba(141,182,0,0.15)]"
-            />
-          </motion.div>
-        </div>
+      <section className="relative min-h-screen flex items-center pt-20 px-6 sm:px-12 md:px-24 overflow-hidden">
+        <DotGrid className="inset-0 w-full h-full" />
+        <Scanlines />
+
+        {/* Floating decorative hexagons */}
+        <FloatingHex delay={0} size={80} x="5%" y="15%" opacity={0.1} />
+        <FloatingHex delay={1.5} size={48} x="85%" y="60%" opacity={0.08} />
+        <FloatingHex delay={0.8} size={36} x="70%" y="20%" opacity={0.07} />
+
+        {/* Parallax knife */}
+        <motion.div
+          className="absolute pointer-events-none"
+          style={{ right: "6%", top: "18%", width: "clamp(280px, 36vw, 520px)", y: yHero, rotate: rotateKnife, x: smoothX, translateY: smoothY }}
+        >
+          <motion.img
+            src={myKnifePath}
+            alt="Cleaver"
+            initial={{ y: 60, opacity: 0, rotate: -20 }}
+            animate={{ y: 0, opacity: 1, rotate: 0 }}
+            transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full h-auto"
+            style={{ filter: "drop-shadow(0 24px 60px rgba(141,182,0,0.22)) drop-shadow(0 0 40px rgba(141,182,0,0.1))" }}
+          />
+        </motion.div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-            className="max-w-3xl"
-          >
-            <motion.h2 variants={fadeIn} className="text-primary font-mono tracking-widest uppercase mb-4 text-sm md:text-base">
-              Ahmad Akram Abbas — Art Studio of One
-            </motion.h2>
-            <motion.h1 variants={fadeIn} className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase leading-[0.85] tracking-tighter mb-8">
-              Crafting<br/>Worlds.<br/>Shipping<br/>Pixels.
+          <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="max-w-3xl">
+            <motion.div variants={fadeUp} className="flex items-center gap-3 mb-6">
+              <PixelCross size={18} opacity={0.6} />
+              <span className="text-primary font-mono tracking-widest uppercase text-xs font-bold">Ahmad Akram Abbas — Art Studio of One</span>
+            </motion.div>
+            <motion.h1
+              variants={fadeUp}
+              className="font-black uppercase leading-[0.82] tracking-tighter mb-10"
+              style={{ fontSize: "clamp(3.5rem, 9vw, 8rem)" }}
+            >
+              Crafting<br />
+              <span style={{ WebkitTextStroke: "2px #8DB600", color: "transparent" }}>Worlds.</span><br />
+              Shipping<br />
+              Pixels.
             </motion.h1>
-            <motion.div variants={fadeIn} className="flex gap-6 items-center">
-              <a 
-                href="https://drive.google.com/drive/folders/1XpmqOdGnW6237iTbRY0rvFaEtri6zRzx" 
-                target="_blank" 
+            <motion.div variants={fadeUp} className="flex flex-wrap gap-4 items-center">
+              <a
+                href="https://drive.google.com/drive/folders/1XpmqOdGnW6237iTbRY0rvFaEtri6zRzx"
+                target="_blank"
                 rel="noopener noreferrer"
-                className="bg-primary text-primary-foreground px-8 py-4 font-bold uppercase tracking-wider hover:bg-white transition-colors flex items-center gap-2"
+                className="flex items-center gap-2 font-bold uppercase tracking-widest px-8 py-4 transition-all duration-300 text-sm"
+                style={{ background: "#8DB600", color: "#0D2B1A" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#b6e800"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#8DB600"; }}
+                data-testid="link-portfolio"
               >
-                Full Portfolio <ArrowRight size={20} />
+                Full Portfolio <ArrowRight size={18} />
+              </a>
+              <a href="#contact" className="font-bold uppercase tracking-widest px-8 py-4 text-sm border border-foreground/20 hover:border-primary hover:text-primary transition-all duration-300">
+                Contact
               </a>
             </motion.div>
           </motion.div>
         </div>
+
+        {/* Bottom scroll indicator */}
+        <motion.div
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2 }}
+        >
+          <span className="font-mono text-xs tracking-widest text-foreground/40 uppercase">Scroll</span>
+          <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="w-[1px] h-10 bg-gradient-to-b from-primary to-transparent" />
+        </motion.div>
       </section>
 
+      {/* Marquee divider */}
+      <div className="relative overflow-hidden py-3" style={{ background: "#8DB600" }}>
+        <motion.div
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+          className="flex whitespace-nowrap"
+          style={{ color: "#0D2B1A" }}
+        >
+          {Array.from({ length: 12 }).map((_, i) => (
+            <span key={i} className="text-xs font-black uppercase tracking-[0.3em] mr-10 select-none">
+              3D Game Art &nbsp;&bull;&nbsp; Stylized Props &nbsp;&bull;&nbsp; Technical Art &nbsp;&bull;&nbsp; Unreal Engine &nbsp;&bull;&nbsp; Zed Studio &nbsp;&bull;&nbsp;
+            </span>
+          ))}
+        </motion.div>
+      </div>
+
       {/* About Section */}
-      <section className="py-32 px-6 sm:px-12 md:px-24 bg-card relative">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-          <motion.div 
+      <section className="py-32 px-6 sm:px-12 md:px-24 bg-card relative overflow-hidden">
+        <DotGrid className="inset-0 w-full h-full opacity-50" />
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center relative z-10">
+          <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-6xl font-black uppercase mb-8 text-primary">Player One Ready.</h2>
-            <div className="space-y-6 text-lg md:text-xl text-foreground/80 leading-relaxed">
+            <div className="flex items-center gap-3 mb-4">
+              <PixelCross size={16} opacity={0.5} />
+              <span className="font-mono text-xs tracking-widest text-foreground/50 uppercase">About</span>
+            </div>
+            <h2 className="text-4xl md:text-6xl font-black uppercase mb-8" style={{ color: "#8DB600" }}>Player One<br />Ready.</h2>
+            <div className="space-y-5 text-base md:text-lg text-foreground/75 leading-relaxed">
               <p>
                 An ambitious and creative 3D game artist with a deep passion for the games field. I stay on top of the latest trends in game art and bring professional, optimized, and organized workflows.
               </p>
@@ -139,93 +328,140 @@ export default function Home() {
               </p>
             </div>
           </motion.div>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="relative"
+            className="relative p-4"
           >
-            <div className="absolute inset-0 border-2 border-primary translate-x-4 translate-y-4" />
-            <img src={brandPath} alt="Zed Studio Brand" className="relative z-10 w-full h-auto grayscale-[20%] hover:grayscale-0 transition-all duration-500" />
+            <CornerMarks />
+            <div className="absolute inset-4 border border-primary/20 translate-x-3 translate-y-3 pointer-events-none" />
+            <img src={brandPath} alt="Zed Studio Brand" className="relative z-10 w-full h-auto" style={{ filter: "saturate(1.1) contrast(1.05)" }} />
           </motion.div>
         </div>
       </section>
 
       {/* Portfolio Grid */}
-      <section className="py-32 px-6 sm:px-12 md:px-24">
+      <section className="py-32 px-6 sm:px-12 md:px-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <motion.h2 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-5xl md:text-7xl font-black uppercase mb-16"
+            className="mb-16 flex items-end justify-between flex-wrap gap-6"
           >
-            The <span className="text-primary">Arsenal</span>.
-          </motion.h2>
+            <h2 className="text-5xl md:text-7xl font-black uppercase leading-none">
+              The <span style={{ color: "#8DB600" }}>Arsenal</span>.
+            </h2>
+            <p className="font-mono text-sm text-foreground/50 uppercase tracking-widest">Stylized Game Props</p>
+          </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {[
-              { src: knifePath, title: "Stylized Knife Prop" },
-              { src: doorPath, title: "Stylized Wooden Door" },
-              { src: flashlightPath, title: "Toon Shaded Flashlight" },
-              { src: keyPath, title: "Sculpted Old Key" },
-              { src: pencilPath, title: "Stylized Pencil" },
-              { src: photoFramePath, title: "Wooden Photo Frame" },
-              { src: scissorsPath, title: "Stylized Scissors" },
-              { src: screwdriverPath, title: "Stylized Screwdriver" },
-              { src: tablePath, title: "Wooden Bench" },
-              { src: bookPath, title: "Leather-bound Book" },
+              { src: knifePath, title: "Stylized Knife" },
+              { src: doorPath, title: "Wooden Door" },
+              { src: flashlightPath, title: "Flashlight" },
+              { src: keyPath, title: "Old Key" },
+              { src: pencilPath, title: "Pencil" },
+              { src: photoFramePath, title: "Photo Frame" },
+              { src: scissorsPath, title: "Scissors" },
+              { src: screwdriverPath, title: "Screwdriver" },
+              { src: tablePath, title: "Wooden Table" },
+              { src: bookPath, title: "Leather Book" },
             ].map((item, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group relative aspect-square bg-card overflow-hidden cursor-pointer"
+                transition={{ duration: 0.45, delay: i * 0.07 }}
+                className="group relative aspect-square overflow-hidden cursor-pointer"
+                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(141,182,0,0.1)" }}
+                data-testid={`card-portfolio-${i}`}
               >
-                <img 
-                  src={item.src} 
-                  alt={item.title} 
-                  className="w-full h-full object-cover object-center group-hover:scale-110 group-hover:rotate-2 transition-all duration-700 opacity-80 group-hover:opacity-100" 
+                <img
+                  src={item.src}
+                  alt={item.title}
+                  className="w-full h-full object-cover object-center transition-all duration-700 group-hover:scale-115"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                  <span className="font-bold text-xl uppercase tracking-wider text-primary">{item.title}</span>
+                <div className="absolute inset-0 transition-all duration-300 flex items-end p-3"
+                  style={{ background: "linear-gradient(to top, rgba(13,43,26,0.92) 0%, transparent 60%)", opacity: 0 }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = "0"; }}
+                >
+                  <span className="font-bold text-sm uppercase tracking-widest" style={{ color: "#8DB600" }}>{item.title}</span>
                 </div>
+                {/* hover glow via CSS */}
+                <motion.div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ boxShadow: "inset 0 0 0 2px rgba(141,182,0,0.4)" }} />
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Environments & Posters */}
-      <section className="py-32 px-6 sm:px-12 md:px-24 bg-card">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+      {/* Environments & Posters — fixed equal height */}
+      <section className="py-32 px-6 sm:px-12 md:px-24 bg-card relative overflow-hidden">
+        <DotGrid className="inset-0 w-full h-full opacity-40" />
+        <div className="max-w-7xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-16"
+          >
+            <h2 className="text-5xl md:text-7xl font-black uppercase leading-none mb-2">
+              Scenes &amp; <span style={{ color: "#8DB600" }}>Worlds</span>.
+            </h2>
+            <p className="font-mono text-sm text-foreground/50 uppercase tracking-widest">Full 3D Environments &amp; Poster Art</p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            {/* Poster 1 */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="space-y-6"
+              className="relative group"
             >
-              <h3 className="text-3xl font-bold uppercase text-primary">A Day in Gamers' Life</h3>
-              <p className="text-foreground/70">Full 3D Scene Render</p>
-              <div className="overflow-hidden border border-border">
-                <img src={posterPath} alt="A Day in Gamers Life" className="w-full h-auto hover:scale-105 transition-transform duration-700" />
+              <div className="relative overflow-hidden" style={{ aspectRatio: "2/3" }}>
+                <CornerMarks />
+                <img
+                  src={posterPath}
+                  alt="A Day in Gamers Life"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ background: "linear-gradient(to top, rgba(13,43,26,0.7) 0%, transparent 50%)" }} />
+              </div>
+              <div className="mt-4 pl-1">
+                <h3 className="text-2xl font-black uppercase" style={{ color: "#8DB600" }}>A Day in Gamers' Life</h3>
+                <p className="text-foreground/55 text-sm mt-1 font-mono uppercase tracking-widest">Full 3D Scene Render</p>
               </div>
             </motion.div>
+
+            {/* Poster 2 */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="space-y-6"
+              transition={{ delay: 0.15 }}
+              className="relative group"
             >
-              <h3 className="text-3xl font-bold uppercase text-primary">Gravy Yard & Dambala Magic</h3>
-              <p className="text-foreground/70">Game Environment Poster</p>
-              <div className="overflow-hidden border border-border">
-                <img src={gravyYardPath} alt="Gravy Yard" className="w-full h-auto hover:scale-105 transition-transform duration-700" />
+              <div className="relative overflow-hidden" style={{ aspectRatio: "2/3" }}>
+                <CornerMarks />
+                <img
+                  src={gravyYardPath}
+                  alt="Gravy Yard"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ background: "linear-gradient(to top, rgba(13,43,26,0.7) 0%, transparent 50%)" }} />
+              </div>
+              <div className="mt-4 pl-1">
+                <h3 className="text-2xl font-black uppercase" style={{ color: "#8DB600" }}>Gravy Yard &amp; the Dambala Magic</h3>
+                <p className="text-foreground/55 text-sm mt-1 font-mono uppercase tracking-widest">Game Environment Poster</p>
               </div>
             </motion.div>
           </div>
@@ -233,165 +469,228 @@ export default function Home() {
       </section>
 
       {/* Process: Robot */}
-      <section className="py-32 px-6 sm:px-12 md:px-24">
+      <section className="py-32 px-6 sm:px-12 md:px-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl font-black uppercase mb-4 text-primary">The Process</h2>
-            <p className="text-xl text-foreground/70 font-mono">From Wireframe to Final Render</p>
-          </div>
-          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-16 text-center"
+          >
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <PixelCross size={16} opacity={0.5} />
+              <span className="font-mono text-xs tracking-widest text-foreground/50 uppercase">Modeling Process</span>
+              <PixelCross size={16} opacity={0.5} />
+            </div>
+            <h2 className="text-4xl md:text-6xl font-black uppercase" style={{ color: "#8DB600" }}>The Process</h2>
+            <p className="text-lg text-foreground/50 mt-3 font-mono tracking-widest uppercase">From wireframe to final render</p>
+          </motion.div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="relative group"
+              className="relative group overflow-hidden"
             >
-              <div className="absolute top-4 left-4 bg-background text-primary font-mono text-sm px-3 py-1 font-bold z-10 border border-primary">WIREFRAME</div>
-              <img src={robotWirePath} alt="Robot Wireframe" className="w-full h-auto object-cover aspect-[4/3] grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" />
+              <div className="absolute top-4 left-4 z-20 font-mono text-xs px-3 py-1 font-bold uppercase tracking-widest"
+                style={{ background: "rgba(13,43,26,0.9)", border: "1px solid rgba(141,182,0,0.5)", color: "#8DB600" }}>
+                01 — Wireframe
+              </div>
+              <img
+                src={robotWirePath}
+                alt="Robot Wireframe"
+                className="w-full h-auto object-cover aspect-square group-hover:scale-105 transition-all duration-700"
+                style={{ filter: "grayscale(0.5) brightness(0.9)" }}
+              />
+              <motion.div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                style={{ boxShadow: "inset 0 0 0 2px rgba(141,182,0,0.3)" }} />
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="relative group"
+              className="relative group overflow-hidden"
             >
-              <div className="absolute top-4 left-4 bg-primary text-primary-foreground font-mono text-sm px-3 py-1 font-bold z-10">TEXTURED RENDER</div>
-              <img src={robotTexturedPath} alt="Robot Textured" className="w-full h-auto object-cover aspect-[4/3] opacity-90 group-hover:opacity-100 transition-all duration-500" />
+              <div className="absolute top-4 left-4 z-20 font-mono text-xs px-3 py-1 font-bold uppercase tracking-widest"
+                style={{ background: "#8DB600", color: "#0D2B1A" }}>
+                02 — Textured Render
+              </div>
+              <img
+                src={robotTexturedPath}
+                alt="Robot Textured"
+                className="w-full h-auto object-cover aspect-square group-hover:scale-105 transition-all duration-700"
+              />
+              <motion.div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                style={{ boxShadow: "inset 0 0 0 2px rgba(141,182,0,0.4)" }} />
             </motion.div>
           </div>
         </div>
       </section>
 
+      {/* Stylized marquee divider 2 */}
+      <div className="relative overflow-hidden py-3" style={{ background: "rgba(255,255,255,0.04)", borderTop: "1px solid rgba(141,182,0,0.15)", borderBottom: "1px solid rgba(141,182,0,0.15)" }}>
+        <motion.div
+          animate={{ x: ["-50%", "0%"] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="flex whitespace-nowrap"
+        >
+          {Array.from({ length: 12 }).map((_, i) => (
+            <span key={i} className="text-xs font-bold uppercase tracking-[0.3em] mr-10 select-none text-foreground/25">
+              Maya &nbsp;&bull;&nbsp; Blender &nbsp;&bull;&nbsp; ZBrush &nbsp;&bull;&nbsp; Substance Painter &nbsp;&bull;&nbsp; Unreal Engine 5 &nbsp;&bull;&nbsp; Unity &nbsp;&bull;&nbsp;
+            </span>
+          ))}
+        </motion.div>
+      </div>
+
       {/* Skills Section */}
-      <section className="py-32 px-6 sm:px-12 md:px-24 bg-card">
-        <div className="max-w-7xl mx-auto">
-          <motion.h2 
+      <section className="py-32 px-6 sm:px-12 md:px-24 bg-card relative overflow-hidden">
+        <DotGrid className="inset-0 w-full h-full opacity-40" />
+        <FloatingHex delay={0} size={100} x="88%" y="10%" opacity={0.06} />
+        <FloatingHex delay={2} size={60} x="2%" y="70%" opacity={0.07} />
+        <div className="max-w-7xl mx-auto relative z-10">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-5xl md:text-7xl font-black uppercase mb-16"
+            className="mb-16"
           >
-            Stats & <span className="text-primary">Skills</span>.
-          </motion.h2>
+            <h2 className="text-5xl md:text-7xl font-black uppercase leading-none">
+              Stats &amp; <span style={{ color: "#8DB600" }}>Skills</span>.
+            </h2>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-            <div>
-              <h3 className="text-2xl font-bold uppercase mb-8 border-b-2 border-primary/30 pb-4">3D & Sculpting</h3>
-              <SkillBar name="3D Modeling – Maya" percentage={90} />
-              <SkillBar name="3D Modeling – Blender" percentage={90} />
-              <SkillBar name="Sculpting – ZBrush" percentage={85} />
-              <SkillBar name="UV Mapping" percentage={90} />
-              <SkillBar name="Adobe Substance Painter" percentage={90} />
-              <SkillBar name="Optimization Skills" percentage={90} />
-            </div>
-            
-            <div>
-              <h3 className="text-2xl font-bold uppercase mb-8 border-b-2 border-primary/30 pb-4">Design & Tech</h3>
-              <SkillBar name="Market-Driven Game Design" percentage={85} />
-              <SkillBar name="Tech Art – Unreal Engine" percentage={75} />
-              <SkillBar name="Tech Art – Unity" percentage={70} />
-              <SkillBar name="Rendering/Lighting – Unreal" percentage={80} />
-              <SkillBar name="Concept Art" percentage={70} />
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
+              <h3 className="text-lg font-black uppercase mb-8 pb-3 tracking-widest" style={{ borderBottom: "2px solid rgba(141,182,0,0.3)", color: "#8DB600" }}>3D &amp; Sculpting</h3>
+              <SkillBar name="3D Modeling – Maya" percentage={90} delay={0} />
+              <SkillBar name="3D Modeling – Blender" percentage={90} delay={0.05} />
+              <SkillBar name="Sculpting – ZBrush" percentage={85} delay={0.1} />
+              <SkillBar name="UV Mapping" percentage={90} delay={0.15} />
+              <SkillBar name="Adobe Substance Painter" percentage={90} delay={0.2} />
+              <SkillBar name="Optimization Skills" percentage={90} delay={0.25} />
+            </motion.div>
 
-            <div>
-              <h3 className="text-2xl font-bold uppercase mb-8 border-b-2 border-primary/30 pb-4">Software</h3>
-              <SkillBar name="Photoshop" percentage={90} />
-              <SkillBar name="Illustrator" percentage={90} />
-              <SkillBar name="After Effects" percentage={90} />
-              <SkillBar name="InDesign" percentage={70} />
-              <SkillBar name="Premiere Pro" percentage={70} />
-              <SkillBar name="DaVinci Resolve" percentage={70} />
-            </div>
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
+              <h3 className="text-lg font-black uppercase mb-8 pb-3 tracking-widest" style={{ borderBottom: "2px solid rgba(141,182,0,0.3)", color: "#8DB600" }}>Design &amp; Tech</h3>
+              <SkillBar name="Market-Driven Game Design" percentage={85} delay={0} />
+              <SkillBar name="Tech Art – Unreal Engine" percentage={75} delay={0.05} />
+              <SkillBar name="Tech Art – Unity" percentage={70} delay={0.1} />
+              <SkillBar name="Rendering/Lighting – Unreal" percentage={80} delay={0.15} />
+              <SkillBar name="Concept Art" percentage={70} delay={0.2} />
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}>
+              <h3 className="text-lg font-black uppercase mb-8 pb-3 tracking-widest" style={{ borderBottom: "2px solid rgba(141,182,0,0.3)", color: "#8DB600" }}>Software</h3>
+              <SkillBar name="Photoshop" percentage={90} delay={0} />
+              <SkillBar name="Illustrator" percentage={90} delay={0.05} />
+              <SkillBar name="After Effects" percentage={90} delay={0.1} />
+              <SkillBar name="InDesign" percentage={70} delay={0.15} />
+              <SkillBar name="Premiere Pro" percentage={70} delay={0.2} />
+              <SkillBar name="DaVinci Resolve Studio" percentage={70} delay={0.25} />
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Experience & Education */}
-      <section className="py-32 px-6 sm:px-12 md:px-24 border-y border-border">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <section className="py-32 px-6 sm:px-12 md:px-24 relative overflow-hidden" style={{ borderTop: "1px solid rgba(141,182,0,0.1)", borderBottom: "1px solid rgba(141,182,0,0.1)" }}>
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
+
+          {/* Experience */}
           <div>
-            <motion.h2 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-4xl font-black uppercase mb-12 flex items-center gap-4"
+              className="mb-12 flex items-center gap-4"
             >
-              <div className="w-8 h-8 bg-primary" /> Experience
-            </motion.h2>
-            
-            <div className="space-y-8 border-l border-border pl-6 ml-4">
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="relative"
-              >
-                <div className="absolute w-3 h-3 bg-primary -left-[31px] top-2" />
-                <span className="text-primary font-mono text-sm tracking-widest">APR 2026 – JUN 2026</span>
-                <h4 className="text-2xl font-bold mt-1 uppercase text-foreground">Mentor at Global Game Jam</h4>
-                <p className="text-foreground/70 mt-2 font-bold text-primary">LATEST ACTIVITY</p>
-              </motion.div>
+              <div className="w-6 h-6 rotate-45" style={{ background: "#8DB600" }} />
+              <h2 className="text-4xl font-black uppercase">Experience</h2>
+            </motion.div>
 
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="relative"
-              >
-                <div className="absolute w-3 h-3 bg-border -left-[31px] top-2" />
-                <span className="text-primary font-mono text-sm tracking-widest">FEB 2025 – PRESENT</span>
-                <h4 className="text-2xl font-bold mt-1 uppercase">3D Game Artist Freelancer</h4>
-              </motion.div>
-
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="relative"
-              >
-                <div className="absolute w-3 h-3 bg-border -left-[31px] top-2" />
-                <span className="text-primary font-mono text-sm tracking-widest">JAN 2026 – APR 2026</span>
-                <h4 className="text-2xl font-bold mt-1 uppercase">3D Game Artist Intern</h4>
-                <p className="text-foreground/70 mt-2">Dimensions Games Studio, Amman. Worked on real mobile game projects.</p>
-              </motion.div>
-
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="relative"
-              >
-                <div className="absolute w-3 h-3 bg-border -left-[31px] top-2" />
-                <span className="text-primary font-mono text-sm tracking-widest">2025</span>
-                <h4 className="text-2xl font-bold mt-1 uppercase">Head of Design Team</h4>
-                <p className="text-foreground/70 mt-2">TEDxASPU 2025</p>
-              </motion.div>
+            <div className="space-y-8">
+              <TimelineItem date="APR 2026 – JUN 2026" title="Mentor — Global Game Jam" highlight index={0} />
+              <TimelineItem date="JAN 2026 – APR 2026" title="3D Game Artist Intern" sub="Dimensions Games Studio, Amman — worked on real mobile game projects." index={1} />
+              <TimelineItem date="FEB 2025 – PRESENT" title="3D Game Artist Freelancer" sub="Independent game art projects." index={2} />
+              <TimelineItem date="2025" title="Head of Design Team" sub="TEDxASPU 2025" index={3} />
+              <TimelineItem date="2022 – 2024" title="Motion Graphics Animator" sub="Freelancer — worked with individuals and YouTube channels." index={4} />
+              <TimelineItem date="2022 – PRESENT" title="Game Jam Participant" sub="Global Game Jam (GGJ), Zanga Game Jam, and more." index={5} />
             </div>
           </div>
 
+          {/* Education */}
           <div>
-            <motion.h2 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-4xl font-black uppercase mb-12 flex items-center gap-4"
+              className="mb-12 flex items-center gap-4"
             >
-              <div className="w-8 h-8 bg-foreground" /> Education
-            </motion.h2>
-            
-            <div className="space-y-8 border-l border-border pl-6 ml-4">
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
+              <div className="w-6 h-6 rotate-45" style={{ background: "rgba(232,228,204,0.8)" }} />
+              <h2 className="text-4xl font-black uppercase">Education</h2>
+            </motion.div>
+
+            <div className="space-y-8">
+              <motion.div
+                initial={{ opacity: 0, x: -24 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="relative"
+                transition={{ duration: 0.5 }}
+                className="relative pl-6 border-l-2"
+                style={{ borderColor: "rgba(255,255,255,0.15)" }}
               >
-                <div className="absolute w-3 h-3 bg-foreground -left-[31px] top-2" />
-                <span className="text-primary font-mono text-sm tracking-widest">2022 – SUMMER 2026</span>
-                <h4 className="text-2xl font-bold mt-1 uppercase">B.Sc. Design and Visual Communication</h4>
-                <p className="text-foreground/70 mt-2">Jordan University of Science and Technology, Irbid</p>
+                <div className="absolute -left-[9px] top-2 w-4 h-4 rotate-45" style={{ background: "rgba(255,255,255,0.2)", border: "2px solid rgba(255,255,255,0.3)" }} />
+                <span className="text-primary font-mono text-xs tracking-widest">2022 – SUMMER 2026</span>
+                <h4 className="text-lg font-black uppercase mt-1 tracking-tight">B.Sc. Design &amp; Visual Communication</h4>
+                <p className="text-foreground/60 mt-1 text-sm">Jordan University of Science and Technology, Irbid</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -24 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.08 }}
+                className="relative pl-6 border-l-2"
+                style={{ borderColor: "rgba(141,182,0,0.4)" }}
+              >
+                <div className="absolute -left-[9px] top-2 w-4 h-4 rotate-45" style={{ background: "#8DB600" }} />
+                <span className="text-primary font-mono text-xs tracking-widest">ONGOING — ENDS MAY 2026</span>
+                <h4 className="text-lg font-black uppercase mt-1 tracking-tight" style={{ color: "#8DB600" }}>Game Design Course</h4>
+                <p className="text-foreground/60 mt-1 text-sm">edX platform — hosted by HP &amp; AMD</p>
+                <span className="inline-block mt-2 text-xs font-bold uppercase tracking-widest px-2 py-0.5" style={{ background: "rgba(141,182,0,0.15)", color: "#8DB600", border: "1px solid rgba(141,182,0,0.3)" }}>
+                  In Progress
+                </span>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -24 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.16 }}
+                className="relative pl-6 border-l-2"
+                style={{ borderColor: "rgba(255,255,255,0.15)" }}
+              >
+                <div className="absolute -left-[9px] top-2 w-4 h-4 rotate-45" style={{ background: "rgba(255,255,255,0.2)", border: "2px solid rgba(255,255,255,0.3)" }} />
+                <span className="text-primary font-mono text-xs tracking-widest">JAN 2026 – APR 2026</span>
+                <h4 className="text-lg font-black uppercase mt-1 tracking-tight">3D Game Art &amp; Technical Art Internship</h4>
+                <p className="text-foreground/60 mt-1 text-sm">Dimensions Games Studio, Amman</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -24 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.24 }}
+                className="relative pl-6 border-l-2"
+                style={{ borderColor: "rgba(255,255,255,0.15)" }}
+              >
+                <div className="absolute -left-[9px] top-2 w-4 h-4 rotate-45" style={{ background: "rgba(255,255,255,0.2)", border: "2px solid rgba(255,255,255,0.3)" }} />
+                <span className="text-primary font-mono text-xs tracking-widest">MONTHLY — ONGOING</span>
+                <h4 className="text-lg font-black uppercase mt-1 tracking-tight">Game Art Workshops</h4>
+                <p className="text-foreground/60 mt-1 text-sm">
+                  Monthly workshops with <span className="font-bold text-foreground/80">Jam3et Games</span> community — continuous hands-on learning in game art and design.
+                </p>
               </motion.div>
             </div>
           </div>
@@ -399,41 +698,79 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-32 px-6 sm:px-12 md:px-24 bg-primary text-primary-foreground">
-        <div className="max-w-7xl mx-auto text-center">
-          <motion.h2 
+      <section id="contact" className="py-32 px-6 sm:px-12 md:px-24 relative overflow-hidden" style={{ background: "#8DB600" }}>
+        <Scanlines />
+        <DotGrid className="inset-0 w-full h-full opacity-20" />
+        <FloatingHex delay={0.5} size={90} x="5%" y="10%" opacity={0.15} />
+        <FloatingHex delay={1.2} size={60} x="85%" y="60%" opacity={0.12} />
+
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-5xl md:text-8xl font-black uppercase mb-12 tracking-tighter"
           >
-            Ready to <br className="md:hidden" />Respawn?
-          </motion.h2>
+            <span className="font-mono text-xs tracking-[0.3em] uppercase font-bold mb-6 block" style={{ color: "#0D2B1A", opacity: 0.6 }}>Ready to Collaborate?</span>
+            <h2
+              className="font-black uppercase leading-[0.85] tracking-tighter mb-12"
+              style={{ fontSize: "clamp(3.5rem, 10vw, 9rem)", color: "#0D2B1A" }}
+            >
+              Ready to<br />
+              <span style={{ WebkitTextStroke: "3px #0D2B1A", color: "transparent" }}>Respawn?</span>
+            </h2>
+          </motion.div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mb-16">
-            <a href="mailto:Ahmad1amazon2@gmail.com" className="flex items-center gap-3 text-xl md:text-2xl font-bold hover:text-white transition-colors">
-              <Mail size={28} /> Ahmad1amazon2@gmail.com
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-12 mb-14"
+          >
+            <a
+              href="mailto:Ahmad1amazon2@gmail.com"
+              className="flex items-center gap-3 text-lg md:text-xl font-bold transition-opacity hover:opacity-70"
+              style={{ color: "#0D2B1A" }}
+              data-testid="link-email"
+            >
+              <Mail size={22} /> Ahmad1amazon2@gmail.com
             </a>
-            <span className="hidden sm:block text-2xl opacity-50">/</span>
-            <a href="tel:+962776507524" className="flex items-center gap-3 text-xl md:text-2xl font-bold hover:text-white transition-colors">
-              <Phone size={28} /> +962 77 650 7524
+            <span className="hidden sm:block text-2xl opacity-30" style={{ color: "#0D2B1A" }}>/</span>
+            <a
+              href="tel:+962776507524"
+              className="flex items-center gap-3 text-lg md:text-xl font-bold transition-opacity hover:opacity-70"
+              style={{ color: "#0D2B1A" }}
+              data-testid="link-phone"
+            >
+              <Phone size={22} /> +962 77 650 7524
             </a>
-          </div>
+          </motion.div>
 
-          <a 
-            href="https://drive.google.com/drive/folders/1XpmqOdGnW6237iTbRY0rvFaEtri6zRzx" 
-            target="_blank" 
+          <motion.a
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            href="https://drive.google.com/drive/folders/1XpmqOdGnW6237iTbRY0rvFaEtri6zRzx"
+            target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 bg-primary-foreground text-primary px-10 py-5 text-xl font-bold uppercase tracking-wider hover:bg-white hover:text-primary-foreground transition-all duration-300"
+            className="inline-flex items-center gap-3 px-10 py-5 text-base font-black uppercase tracking-widest transition-all duration-300"
+            style={{ background: "#0D2B1A", color: "#8DB600" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#1A3A2A"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#0D2B1A"; }}
+            data-testid="link-drive-portfolio"
           >
-            <ExternalLink size={24} /> Access Google Drive Portfolio
-          </a>
+            <ExternalLink size={20} /> Access Full Portfolio
+          </motion.a>
         </div>
       </section>
 
-      <footer className="py-8 px-6 text-center text-foreground/50 text-sm font-mono flex flex-col md:flex-row items-center justify-between">
-        <p>© {new Date().getFullYear()} Zed Studio. Art Studio of One.</p>
-        <p className="mt-4 md:mt-0">Jordan based. Global reach.</p>
+      <footer className="py-6 px-6 text-center font-mono text-xs text-foreground/35 flex flex-col md:flex-row items-center justify-between gap-4" style={{ borderTop: "1px solid rgba(141,182,0,0.1)" }}>
+        <p>&copy; {new Date().getFullYear()} Zed Studio — Art Studio of One.</p>
+        <div className="flex items-center gap-2">
+          <PixelCross size={12} opacity={0.3} />
+          <p>Jordan based. Global reach.</p>
+        </div>
       </footer>
     </div>
   );
