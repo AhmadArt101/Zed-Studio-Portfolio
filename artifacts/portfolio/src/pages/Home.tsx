@@ -158,7 +158,7 @@ const TimelineItem = ({
       className="absolute -left-[9px] top-2 w-4 h-4 rotate-45"
       style={{ background: highlight ? "#8DB600" : "rgba(255,255,255,0.2)", border: highlight ? "none" : "2px solid rgba(255,255,255,0.3)" }}
     />
-    <span className="text-primary font-mono text-xs tracking-widest">{date}</span>
+    {date && <span className="text-primary font-mono text-xs tracking-widest">{date}</span>}
     <h4 className={`text-lg font-black uppercase mt-1 tracking-tight ${highlight ? "text-primary" : "text-foreground"}`}>{title}</h4>
     {sub && <p className="text-foreground/60 mt-1 text-sm">{sub}</p>}
     {highlight && (
@@ -643,7 +643,7 @@ export default function Home() {
               <TimelineItem date="FEB 2025 – PRESENT" title="3D Game Artist Freelancer" sub="Independent game art projects." index={2} />
               <TimelineItem date="2025" title="Head of Design Team" sub="TEDxASPU 2025" index={3} />
               <TimelineItem date="2022 – 2024" title="Motion Graphics Animator" sub="Freelancer — worked with individuals and YouTube channels." index={4} />
-              <TimelineItem date="2022 – 2025" title="Game Jam Participant" sub="Global Game Jam (GGJ), Zanga Game Jam, and more." index={5} />
+              <TimelineItem date="" title="Game Jam Participant" sub="Global Game Jam (GGJ), Zanga Game Jam, and more." index={5} />
             </div>
           </div>
 
