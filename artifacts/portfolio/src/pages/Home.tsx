@@ -607,7 +607,6 @@ export default function Home() {
               <SkillBar name="Tech Art – Unreal Engine" percentage={75} delay={0.05} />
               <SkillBar name="Tech Art – Unity" percentage={70} delay={0.1} />
               <SkillBar name="Rendering/Lighting – Unreal" percentage={80} delay={0.15} />
-              <SkillBar name="Concept Art" percentage={70} delay={0.2} />
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}>
